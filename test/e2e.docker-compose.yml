@@ -1,0 +1,21 @@
+# Docker-compose for integration tests,
+# do not modify if you are not working with integration tests
+
+version: "3"
+
+services:
+  nats:
+    container_name: nats
+    image: nats:alpine
+    restart: unless-stopped
+    ports:
+      - 4222
+
+
+  scheduler:
+    container_name: scheduler
+    build: ../
+    depends_on:
+      - nats
+    links:
+      - nats
