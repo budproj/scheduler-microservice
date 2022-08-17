@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  broker-nats:
+  nats:
     image: nats
     restart: unless-stopped
     ports:
@@ -9,9 +9,20 @@ services:
       - ${NATS_MONITORING_PORT:-8222}:8222
 
 
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: username
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - ${MONGODB_PORT:-27017}:27017
+
+
   scheduler-microservice:
     build: .
-    # links:
-    #   - broker-nats
-    # environment:
-      # NATS_CONNECTION_STRING: nats://broker-nats:4222
+    links:
+      - nats
+    environment:
+      NATS_CONNECTION_STRING: nats://nats:4222
+      MONGODB_CONNECTION_STRING: mongodb://username:password@mongo
