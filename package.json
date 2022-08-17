@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prebuild": "rimraf dist",
-    "build": "nest build",
+    "prebuild": "tsc --build --clean",
+    "build": "tsc --build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:prod": "node dist",
     "lint": "eslint \"{src,test}/**/*.ts\"",

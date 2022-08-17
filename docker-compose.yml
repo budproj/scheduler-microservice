@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  broker-nats:
+    image: nats
+    restart: unless-stopped
+    ports:
+      - ${NATS_PORT:-4222}:4222
+      - ${NATS_MONITORING_PORT:-8222}:8222
+
+
+  scheduler-microservice:
+    build: .
+    # links:
+    #   - broker-nats
+    # environment:
+      # NATS_CONNECTION_STRING: nats://broker-nats:4222
