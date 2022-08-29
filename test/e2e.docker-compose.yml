@@ -10,12 +10,41 @@ services:
     restart: unless-stopped
     ports:
       - 4222
+    healthcheck:
+        test: echo $$(wget --server-response http://localhost:8222/varz 2>&1 | grep  '200 OK') | grep '200'  || exit 1
+        interval: 1s
+        timeout: 1s
+        retries: 5
+        start_period: 1s
+
+  mongo:
+    container_name: mongo
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: username
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - 27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 1s
+      timeout: 1s
+      retries: 10
+      start_period: 1s
+
 
 
   scheduler:
     container_name: scheduler
     build: ../
     depends_on:
-      - nats
+      nats:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
     links:
       - nats
+      - mongo
+    environment:
+      MONGODB_CONNECTION_STRING: mongodb://username:password@mongo/
+      NATS_CONNECTION_STRING: nats://nats:4222

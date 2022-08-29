@@ -19,6 +19,8 @@ export const bootstrapDockerCompose = async () => {
       'nats_1',
       waitForText('Listening for client connections on 0.0.0.0:4222'),
     )
+    .withWaitStrategy('mongo_1', Wait.forHealthCheck())
+    .withBuild()
     .up();
 
   const natsContainer = dockerComposeEnvironment.getContainer('nats');

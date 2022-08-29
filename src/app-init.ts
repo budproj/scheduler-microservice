@@ -3,6 +3,7 @@ import {
   connect as connectAgenda,
   enableGracefulShutdown,
 } from './infrastructure/agenda';
+import { healthCheckController } from './nats.controller';
 
 export const initalizeApplication = async () => {
   // Agenda
@@ -11,4 +12,7 @@ export const initalizeApplication = async () => {
 
   // NATS
   await connectNats();
+
+  // Controllers
+  healthCheckController();
 };

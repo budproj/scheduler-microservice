@@ -1,4 +1,3 @@
-import { connect } from './connect';
-import { subscribe } from './subscribe';
-
-export { connect, subscribe };
+export { connect } from './connect';
+export { subscribe } from './subscribe';
+export { encode, decode } from './decoder';

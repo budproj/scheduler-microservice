@@ -1,10 +1,12 @@
-import { subscribe } from './infrastructure/nats';
-import { scheduleRoutine } from './jobs/process-routine';
+import { subscribe, encode, decode } from './infrastructure/nats';
 
-subscribe('health-check', async (err, msg) => {
-  if (err) throw err;
+export const healthCheckController = () => {
+  subscribe('scheduler:health-check', (error, msg) => {
+    if (error) throw error;
 
-  console.log('received message', msg);
+    console.log('received message', decode(msg.data));
 
-  msg.respond(msg.data);
-});
+    const encodedResponse = encode('pong');
+    return msg.respond(encodedResponse);
+  });
+};

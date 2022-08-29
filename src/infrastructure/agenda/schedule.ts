@@ -3,6 +3,6 @@ import { getSingleton } from './singleton';
 
 export const schedule = (
   when: string | Date,
-  names: string,
+  jobToRun: string,
   data: any,
-): Promise<Job> => getSingleton().schedule(when, names, data);
+): Promise<Job> => getSingleton().schedule(when, jobToRun, data);

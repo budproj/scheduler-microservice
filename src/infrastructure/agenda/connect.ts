@@ -1,4 +1,4 @@
-import Agenda from 'agenda';
+import { Agenda } from 'agenda';
 import { setSingleton } from './singleton';
 
 const { MONGODB_CONNECTION_STRING } = process.env;

@@ -2,27 +2,44 @@ version: "3"
 
 services:
   nats:
-    image: nats
+    image: nats:alpine
     restart: unless-stopped
     ports:
       - ${NATS_PORT:-4222}:4222
       - ${NATS_MONITORING_PORT:-8222}:8222
-
+    healthcheck:
+        test: echo $$(wget --server-response http://localhost:8222/varz 2>&1 | grep  '200 OK') | grep '200'  || exit 1
+        interval: 1s
+        timeout: 1s
+        retries: 5
+        start_period: 1s
 
   mongo:
     image: mongo
-    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: username
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:
       - ${MONGODB_PORT:-27017}:27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 1s
+      timeout: 1s
+      retries: 5
+      start_period: 1s
 
 
-  scheduler-microservice:
+
+  scheduler:
     build: .
+    depends_on:
+      nats:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
     links:
       - nats
+      - mongo
     environment:
-      NATS_CONNECTION_STRING: nats://nats:4222
-      MONGODB_CONNECTION_STRING: mongodb://username:password@mongo
+      MONGODB_CONNECTION_STRING: mongodb://username:password@mongo:27017/
+      NATS_CONNECTION_STRING: nats://192.168.128.2:4222
