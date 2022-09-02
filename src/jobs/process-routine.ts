@@ -1,13 +1,17 @@
 import { define, Job, schedule } from 'src/infrastructure/agenda';
+import { encode, publish } from 'src/infrastructure/nats';
 
 export interface processRoutineData {
+  companyId: string;
   routineId: string;
+  timestamp: Date;
+  disabledTeams: string[];
 }
 
-define('processRoutine', (job: Job<processRoutineData>) => {
-  const { routineId } = job.attrs.data;
+define('processRoutine', (job: Job<processRoutineData>): void => {
+  const data = encode<processRoutineData>(job.attrs.data);
 
-  console.log(routineId);
+  return publish('deliveryRoutineNotification', data);
 });
 
 export const scheduleRoutine = (when: string | Date, data: any) =>

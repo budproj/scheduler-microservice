@@ -1,5 +1,4 @@
 import { connect, NatsConnection, JSONCodec } from 'nats';
-import { util } from 'prettier';
 import { getNatsConnectionString } from './support-functions/generate-connection-strings';
 import { setTimeout } from 'timers/promises';
 
