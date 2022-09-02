@@ -19,22 +19,34 @@ export const healthCheckController = () => {
     return msg.respond(encodedResponse);
   });
 
-  subscribe('createSchedule', (error, msg) => {
+  subscribe('createSchedule', async (error, msg) => {
     if (error) return console.error(error);
 
     const scheduleConfiguration = decode<ScheduleInput>(msg.data);
 
     const { cron, ...data } = scheduleConfiguration;
 
-    scheduleRoutine(cron, data);
+    await scheduleRoutine(cron, data);
   });
 
-  subscribe('deleteSchedule', (error, msg) => {
+  subscribe('deleteSchedule', async (error, msg) => {
     if (error) return console.error(error);
 
     const { routineId, companyId } = decode<ScheduleInput>(msg.data);
-    const data = { routineId, companyId }
+    const data = { routineId, companyId };
 
-    removeRoutine(data);
+    await removeRoutine(data);
+  });
+
+  subscribe('updateSchedule', async (error, msg) => {
+    if (error) return console.error(error);
+
+    const scheduleConfiguration = decode<ScheduleInput>(msg.data);
+
+    const { routineId, companyId } = scheduleConfiguration;
+    await removeRoutine({ routineId, companyId });
+
+    const { cron, ...addData } = scheduleConfiguration;
+    await scheduleRoutine(cron, addData);
   });
 };
