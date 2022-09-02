@@ -1,5 +1,5 @@
 import { subscribe, encode, decode } from './infrastructure/nats';
-import { scheduleRoutine } from './jobs/process-routine';
+import { removeRoutine, scheduleRoutine } from './jobs/process-routine';
 
 interface ScheduleInput {
   companyId: string;
@@ -27,5 +27,14 @@ export const healthCheckController = () => {
     const { cron, ...data } = scheduleConfiguration;
 
     scheduleRoutine(cron, data);
+  });
+
+  subscribe('deleteSchedule', (error, msg) => {
+    if (error) return console.error(error);
+
+    const { routineId, companyId } = decode<ScheduleInput>(msg.data);
+    const data = { routineId, companyId }
+
+    removeRoutine(data);
   });
 };
