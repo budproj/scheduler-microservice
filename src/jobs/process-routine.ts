@@ -13,11 +13,13 @@ export interface removeRoutineData {
   routineId: string;
 }
 
-define('processRoutine', (job: Job<processRoutineData>): void => {
-  const data = encode<processRoutineData>(job.attrs.data);
+export const init = () => {
+  define('processRoutine', (job: Job<processRoutineData>): void => {
+    const data = encode<processRoutineData>(job.attrs.data);
 
-  return publish('deliveryRoutineNotification', data);
-});
+    return publish('deliveryRoutineNotification', data);
+  });
+};
 
 export const scheduleRoutine = (when: string | Date, data: any) =>
   schedule(when, 'processRoutine', data);
