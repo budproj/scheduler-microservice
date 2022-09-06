@@ -1,5 +1,5 @@
-import { define, Job, schedule, cancelJobs } from 'src/infrastructure/agenda';
-import { encode, publish } from 'src/infrastructure/nats';
+import { define, Job, every, cancelJobs } from '../infrastructure/agenda';
+import { encode, publish } from '../infrastructure/nats';
 
 export interface processRoutineData {
   companyId: string;
@@ -21,8 +21,8 @@ export const init = () => {
   });
 };
 
-export const scheduleRoutine = (when: string | Date, data: any) =>
-  schedule(when, 'processRoutine', data);
+export const scheduleRoutine = (when: string, data: any) =>
+  every(when, 'processRoutine', data);
 
 export const removeRoutine = (data: removeRoutineData) =>
   cancelJobs<removeRoutineData>({ name: 'processRoutine', ...data });
