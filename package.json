@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "ts-node ./src/index.ts",
+    "start:dev": "ts-node -r dotenv/config ./src/index.ts",
     "prebuild": "tsc --build --clean",
     "build": "tsc --build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -22,6 +22,7 @@
   "devDependencies": {
     "@types/jest": "^28.1.7",
     "@typescript-eslint/eslint-plugin": "^5.33.1",
+    "dotenv": "^16.0.2",
     "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
