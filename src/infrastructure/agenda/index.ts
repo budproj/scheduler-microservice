@@ -4,3 +4,6 @@ export { define } from './define';
 export { connect } from './connect';
 export { enableGracefulShutdown } from './graceful-shutdown';
 export { cancelJobs } from './cancel-jobs';
+export { repeatEvery } from './repeat-every';
+export { create } from './create';
+export { schedule } from './schedule';
