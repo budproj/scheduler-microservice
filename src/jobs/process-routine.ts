@@ -2,15 +2,14 @@ import { define, Job, every, cancelJobs } from '../infrastructure/agenda';
 import { encode, publish } from '../infrastructure/nats';
 
 export interface processRoutineData {
+  id: string;
   companyId: string;
-  routineId: string;
-  timestamp: Date;
   disabledTeams: string[];
 }
 
 export interface removeRoutineData {
   companyId: string;
-  routineId: string;
+  id: string;
 }
 
 export const init = () => {

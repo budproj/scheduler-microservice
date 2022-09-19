@@ -2,9 +2,9 @@ import { subscribe, encode, decode } from './infrastructure/nats';
 import { removeRoutine, scheduleRoutine } from './jobs/process-routine';
 
 interface ScheduleInput {
+  id: string;
+  queue: string;
   companyId: string;
-  routineId: string;
-  timestamp: Date;
   disabledTeams: string[];
   cron: string;
 }
