@@ -32,8 +32,6 @@ services:
       retries: 10
       start_period: 1s
 
-
-
   scheduler:
     container_name: scheduler
     build: ../
