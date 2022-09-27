@@ -27,8 +27,8 @@ services:
       - 27017
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
-      interval: 1s
-      timeout: 1s
+      interval: 5s
+      timeout: 5s
       retries: 10
       start_period: 1s
 
