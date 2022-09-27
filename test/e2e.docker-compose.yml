@@ -44,5 +44,5 @@ services:
       - nats
       - mongo
     environment:
-      MONGODB_CONNECTION_STRING: mongodb://username:password@mongo/
+      MONGODB_CONNECTION_STRING: mongodb://username:password@mongo:27017/
       NATS_CONNECTION_STRING: nats://nats:4222

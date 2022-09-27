@@ -3,5 +3,5 @@ export interface Env {
   port: number;
 }
 
-export const getNatsConnectionString = (postgresEnv: Env) =>
-  `nats://${postgresEnv.host}:${postgresEnv.port}`;
+export const getNatsConnectionString = (natsEnv: Env) =>
+  `nats://${natsEnv.host}:${natsEnv.port}`;
