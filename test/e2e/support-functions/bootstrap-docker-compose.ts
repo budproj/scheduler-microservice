@@ -15,12 +15,12 @@ export const bootstrapDockerCompose = async () => {
     composeFilePath,
     'e2e.docker-compose.yml',
   )
-    .withWaitStrategy('mongo_1', Wait.forHealthCheck())
+    .withWaitStrategy('mongo', Wait.forHealthCheck())
     .withWaitStrategy(
-      'nats_1',
+      'nats',
       waitForText('Listening for client connections on 0.0.0.0:4222'),
     )
-    .withWaitStrategy('scheduler_1', waitForText('App Running'))
+    .withWaitStrategy('scheduler', waitForText('App Running'))
     .withBuild()
     .up();
 
