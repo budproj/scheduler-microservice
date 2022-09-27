@@ -1,7 +1,7 @@
 # Docker-compose for integration tests,
 # do not modify if you are not working with integration tests
 
-version: "3"
+version: "3.5"
 
 services:
   nats:
@@ -27,10 +27,11 @@ services:
       - 27017
     healthcheck:
       test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 1s
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
 
   scheduler:
     container_name: scheduler
