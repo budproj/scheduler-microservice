@@ -4,6 +4,7 @@ import {
   StartedDockerComposeEnvironment,
   Wait,
 } from 'testcontainers';
+import { setTimeout } from 'timers/promises';
 
 const composeFilePath = pathJoin(process.env.PWD, 'test');
 const waitForText = Wait.forLogMessage;
@@ -16,12 +17,14 @@ export const bootstrapDockerCompose = async () => {
     'e2e.docker-compose.yml',
   )
     .withWaitStrategy(
-      'nats_1',
+      'nats',
       waitForText('Listening for client connections on 0.0.0.0:4222'),
     )
-    .withWaitStrategy('mongo_1', Wait.forHealthCheck())
+    .withWaitStrategy('scheduler', waitForText('App Running'))
     .withBuild()
     .up();
+
+  await setTimeout(30_000);
 
   const natsContainer = dockerComposeEnvironment.getContainer('nats');
 

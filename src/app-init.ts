@@ -17,4 +17,6 @@ export const initalizeApplication = async () => {
 
   // Controllers
   healthCheckController();
+
+  console.log('App Running');
 };

@@ -2,9 +2,9 @@ import { subscribe, encode, decode } from './infrastructure/nats';
 import { removeRoutine, scheduleRoutine } from './jobs/process-routine';
 
 interface ScheduleInput {
+  id: string;
+  queue: string;
   companyId: string;
-  routineId: string;
-  timestamp: Date;
   disabledTeams: string[];
   cron: string;
 }
@@ -22,20 +22,20 @@ export const healthCheckController = () => {
   subscribe('createSchedule', async (error, msg) => {
     if (error) return console.error(error);
 
-    const scheduleConfiguration = decode<ScheduleInput>(msg.data);
+    const { data } = decode<ScheduleInput>(msg.data);
+    const { cron, ...routine } = data;
 
-    const { cron, ...data } = scheduleConfiguration;
-
-    await scheduleRoutine(cron, data);
+    scheduleRoutine(cron, routine);
   });
 
   subscribe('deleteSchedule', async (error, msg) => {
     if (error) return console.error(error);
 
-    const { routineId, companyId } = decode<ScheduleInput>(msg.data);
-    const data = { routineId, companyId };
+    const { data } = decode<ScheduleInput>(msg.data);
+    const { id, companyId } = data;
+    const routine = { id, companyId };
 
-    await removeRoutine(data);
+    await removeRoutine(routine);
   });
 
   subscribe('updateSchedule', async (error, msg) => {
@@ -43,10 +43,11 @@ export const healthCheckController = () => {
 
     const scheduleConfiguration = decode<ScheduleInput>(msg.data);
 
-    const { routineId, companyId } = scheduleConfiguration;
-    await removeRoutine({ routineId, companyId });
+    const { data } = scheduleConfiguration;
+    const { id, companyId, cron, ...restOfRoutine } = data;
+    await removeRoutine({ id, companyId });
 
-    const { cron, ...addData } = scheduleConfiguration;
-    await scheduleRoutine(cron, addData);
+    const addData = { id, companyId, ...restOfRoutine };
+    scheduleRoutine(cron, addData);
   });
 };
