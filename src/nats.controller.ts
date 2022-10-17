@@ -32,8 +32,8 @@ export const healthCheckController = () => {
     if (error) return console.error(error);
 
     const { data } = decode<ScheduleInput>(msg.data);
-    const { id, companyId } = data;
-    const routine = { id, companyId };
+    const { queue, companyId } = data;
+    const routine = { queue, companyId };
 
     await removeRoutine(routine);
   });
@@ -44,10 +44,10 @@ export const healthCheckController = () => {
     const scheduleConfiguration = decode<ScheduleInput>(msg.data);
 
     const { data } = scheduleConfiguration;
-    const { id, companyId, cron, ...restOfRoutine } = data;
-    await removeRoutine({ id, companyId });
+    const { cron, queue, companyId, ...restOfRoutine } = data;
+    await removeRoutine({ queue, companyId });
 
-    const addData = { id, companyId, ...restOfRoutine };
-    scheduleRoutine(cron, addData);
+    const newSchedule = { queue, companyId, ...restOfRoutine };
+    scheduleRoutine(cron, newSchedule);
   });
 };

@@ -9,7 +9,7 @@ export interface processRoutineData {
 
 export interface removeRoutineData {
   companyId: string;
-  id: string;
+  queue: string;
 }
 
 export const init = () => {
@@ -29,4 +29,8 @@ export const scheduleRoutine = (when: string, data: unknown) => {
 };
 
 export const removeRoutine = (data: removeRoutineData) =>
-  cancelJobs<removeRoutineData>({ name: 'processRoutine', ...data });
+  cancelJobs<removeRoutineData>({
+    name: 'processRoutine',
+    'data.companyId': data.companyId,
+    'data.queue': data.queue,
+  });
