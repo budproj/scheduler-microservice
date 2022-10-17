@@ -58,6 +58,6 @@
   },
   "dependencies": {
     "agenda": "^4.3.0",
-    "nats": "^2.7.1"
+    "nats": "^2.8.0"
   }
 }
