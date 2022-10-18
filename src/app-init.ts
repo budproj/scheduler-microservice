@@ -5,6 +5,7 @@ import {
 } from './infrastructure/agenda';
 import { init as processRoutineInit } from './jobs/process-routine';
 import { healthCheckController } from './nats.controller';
+import { logger } from './infrastructure/logger';
 
 export const initalizeApplication = async () => {
   // Agenda
@@ -17,6 +18,5 @@ export const initalizeApplication = async () => {
 
   // Controllers
   healthCheckController();
-
-  console.log('App Running');
+  logger.info('Microservice is running');
 };

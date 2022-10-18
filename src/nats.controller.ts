@@ -1,5 +1,6 @@
 import { subscribe, encode, decode } from './infrastructure/nats';
 import { removeRoutine, scheduleRoutine } from './jobs/process-routine';
+import { logger } from './infrastructure/logger';
 
 interface ScheduleInput {
   id: string;
@@ -11,6 +12,7 @@ interface ScheduleInput {
 
 export const healthCheckController = () => {
   subscribe('scheduler:health-check', (error, msg) => {
+    logger.info('received a healthcheck message');
     if (error) throw error;
 
     console.log('received message', decode(msg.data));
@@ -20,6 +22,7 @@ export const healthCheckController = () => {
   });
 
   subscribe('createSchedule', async (error, msg) => {
+    logger.info('received a createSchedule message');
     if (error) return console.error(error);
 
     const { data } = decode<ScheduleInput>(msg.data);
@@ -29,6 +32,7 @@ export const healthCheckController = () => {
   });
 
   subscribe('deleteSchedule', async (error, msg) => {
+    logger.info('received a deleteSchedule message');
     if (error) return console.error(error);
 
     const { data } = decode<ScheduleInput>(msg.data);
@@ -39,6 +43,7 @@ export const healthCheckController = () => {
   });
 
   subscribe('updateSchedule', async (error, msg) => {
+    logger.info('received a updateSchedule message');
     if (error) return console.error(error);
 
     const scheduleConfiguration = decode<ScheduleInput>(msg.data);

@@ -1,3 +1,4 @@
+import { logger } from '../infrastructure/logger';
 import { define, Job, schedule, cancelJobs } from '../infrastructure/agenda';
 import { encode, publish } from '../infrastructure/nats';
 
@@ -16,6 +17,8 @@ export const init = () => {
   define(
     'processRoutine',
     (job: Job<processRoutineData & { queue: string }>): void => {
+      logger.info('processing routine');
+
       const { queue, ...jobData } = job.attrs.data;
       const data = encode<processRoutineData>(jobData);
 
