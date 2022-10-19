@@ -32,5 +32,5 @@ spec:
             - name: MONGODB_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
-                  name: scheduler-microservice
+                  name: scheduler-microservice-secrets
                   key: mongodb-connection-string
