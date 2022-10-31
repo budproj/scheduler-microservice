@@ -53,6 +53,6 @@ export const healthCheckController = () => {
     await removeRoutine({ queue, companyId });
 
     const newSchedule = { queue, companyId, ...restOfRoutine };
-    scheduleRoutine(cron, newSchedule);
+    await scheduleRoutine(cron, newSchedule);
   });
 };
