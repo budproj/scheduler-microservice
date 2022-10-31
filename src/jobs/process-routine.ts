@@ -17,7 +17,7 @@ export const init = () => {
   define(
     'processRoutine',
     (job: Job<processRoutineData & { queue: string }>): void => {
-      logger.info('processing routine');
+      logger.info('processing routine', job);
 
       const { queue, ...jobData } = job.attrs.data;
       const data = encode<processRoutineData>(jobData);

@@ -12,8 +12,8 @@ interface ScheduleInput {
 
 export const healthCheckController = () => {
   subscribe('scheduler:health-check', (error, msg) => {
+    if (error) return logger.error('error on healthcheck', error);
     logger.info('received a healthcheck message');
-    if (error) throw error;
 
     console.log('received message', decode(msg.data));
 
@@ -22,8 +22,8 @@ export const healthCheckController = () => {
   });
 
   subscribe('createSchedule', async (error, msg) => {
+    if (error) return logger.error('error on createSchedule', error);
     logger.info('received a createSchedule message');
-    if (error) return console.error(error);
 
     const { data } = decode<ScheduleInput>(msg.data);
     const { cron, ...routine } = data;
@@ -32,8 +32,8 @@ export const healthCheckController = () => {
   });
 
   subscribe('deleteSchedule', async (error, msg) => {
+    if (error) return logger.error('error on deleteSchedule', error);
     logger.info('received a deleteSchedule message');
-    if (error) return console.error(error);
 
     const { data } = decode<ScheduleInput>(msg.data);
     const { queue, companyId } = data;
@@ -43,8 +43,8 @@ export const healthCheckController = () => {
   });
 
   subscribe('updateSchedule', async (error, msg) => {
-    logger.info('received a updateSchedule message');
-    if (error) return console.error(error);
+    if (error) return logger.error('error on updateSchedule', error);
+    logger.info('received a updateSchedule message', msg);
 
     const scheduleConfiguration = decode<ScheduleInput>(msg.data);
 
