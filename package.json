@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "agenda": "^5.0.0",
-    "nats": "^2.10.2",
+    "nats": "^2.10.3",
     "winston": "^3.8.2"
   }
 }
