@@ -4,7 +4,7 @@ import {
   enableGracefulShutdown,
 } from './infrastructure/agenda';
 import { init as processRoutineInit } from './jobs/process-routine';
-import { subscriptionsController } from './nats.controller';
+import { messagingController } from './messaging.controller';
 import { logger } from './infrastructure/logger';
 
 export const initalizeApplication = async () => {
@@ -17,6 +17,6 @@ export const initalizeApplication = async () => {
   await connectMessaging();
 
   // Controllers
-  subscriptionsController();
+  messagingController();
   logger.info('Microservice is running');
 };
