@@ -1,19 +1,6 @@
 version: "3"
 
 services:
-  nats:
-    image: nats:alpine
-    restart: unless-stopped
-    ports:
-      - ${NATS_PORT:-4222}:4222
-      - ${NATS_MONITORING_PORT:-8222}:8222
-    healthcheck:
-        test: echo $$(wget --server-response http://localhost:8222/varz 2>&1 | grep  '200 OK') | grep '200'  || exit 1
-        interval: 1s
-        timeout: 1s
-        retries: 5
-        start_period: 1s
-
   mongo:
     image: mongo
     environment:
@@ -27,6 +14,8 @@ services:
       timeout: 1s
       retries: 5
       start_period: 1s
+    networks:
+      - bud-scheduler
 
   scheduler:
     build: .
@@ -36,8 +25,16 @@ services:
       mongo:
         condition: service_healthy
     links:
-      - nats
       - mongo
     environment:
       MONGODB_CONNECTION_STRING: mongodb://username:password@mongo:27017/
       NATS_CONNECTION_STRING: nats://192.168.128.2:4222
+      RABBITMQ_CONNECTION_STRING: amqp://rabbitmq:5672
+    networks:
+      - bud-rabbitmq
+      - bud-scheduler
+
+networks:
+  bud-rabbitmq:
+    external: true
+  bud-scheduler:
