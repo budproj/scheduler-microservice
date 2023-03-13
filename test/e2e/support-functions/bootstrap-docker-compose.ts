@@ -4,7 +4,6 @@ import {
   StartedDockerComposeEnvironment,
   Wait,
 } from 'testcontainers';
-import { setTimeout } from 'timers/promises';
 
 const composeFilePath = pathJoin(process.env.PWD, 'test');
 const waitForText = Wait.forLogMessage;
@@ -16,13 +15,11 @@ export const bootstrapDockerCompose = async () => {
     composeFilePath,
     'e2e.docker-compose.yml',
   )
-    .withWaitStrategy('rabbitmq', waitForText('Server startup complete'))
-    .withWaitStrategy('mongo', waitForText('Waiting for connections'))
-    .withWaitStrategy('scheduler', waitForText('Microservice is running'))
+    .withWaitStrategy('rabbitmq_1', waitForText('Server startup complete'))
+    .withWaitStrategy('mongo_1', waitForText('Waiting for connections'))
+    .withWaitStrategy('scheduler_1', waitForText('Microservice is running'))
     .withBuild()
     .up();
-
-  await setTimeout(30_000);
 
   const rabbitmqContainer = dockerComposeEnvironment.getContainer('rabbitmq');
 
