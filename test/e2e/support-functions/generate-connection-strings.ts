@@ -3,5 +3,5 @@ export interface Env {
   port: number;
 }
 
-export const getNatsConnectionString = (natsEnv: Env) =>
-  `nats://${natsEnv.host}:${natsEnv.port}`;
+export const getRabbitMQConnectionString = (rabbitMQEnv: Env) =>
+  `amqp://guest:guest@${rabbitMQEnv.host}:${rabbitMQEnv.port}`;
