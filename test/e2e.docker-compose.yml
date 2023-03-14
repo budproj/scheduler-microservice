@@ -4,18 +4,17 @@
 version: "3.5"
 
 services:
-  nats:
-    container_name: nats
-    image: nats:alpine
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq
     restart: unless-stopped
     ports:
-      - 4222
+      - 5672
     healthcheck:
-        test: echo $$(wget --server-response http://localhost:8222/varz 2>&1 | grep  '200 OK') | grep '200'  || exit 1
-        interval: 1s
-        timeout: 1s
-        retries: 5
-        start_period: 1s
+      test: rabbitmq-diagnostics -q status
+      interval: 3s
+      timeout: 10s
+      retries: 30
 
   mongo:
     container_name: mongo
@@ -25,17 +24,26 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:
       - 27017
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongo:27017/test --quiet
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
 
 
   scheduler:
     container_name: scheduler
     build: ../
     depends_on:
-      nats:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
         condition: service_healthy
     links:
-      - nats
+      - rabbitmq
       - mongo
     environment:
       MONGODB_CONNECTION_STRING: mongodb://username:password@mongo:27017/
-      NATS_CONNECTION_STRING: nats://nats:4222
+      RABBITMQ_CONNECTION_STRING: "amqp://guest:guest@rabbitmq:5672"

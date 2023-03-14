@@ -33,3 +33,10 @@ spec:
                 secretKeyRef:
                   name: scheduler-microservice-secrets
                   key: mongodb-connection-string
+
+
+            - name: RABBITMQ_CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: notifications-microservice-secrets
+                  key: rabbitmq-connection-string

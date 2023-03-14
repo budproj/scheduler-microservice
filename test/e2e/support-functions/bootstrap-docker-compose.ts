@@ -4,7 +4,6 @@ import {
   StartedDockerComposeEnvironment,
   Wait,
 } from 'testcontainers';
-import { setTimeout } from 'timers/promises';
 
 const composeFilePath = pathJoin(process.env.PWD, 'test');
 const waitForText = Wait.forLogMessage;
@@ -16,21 +15,17 @@ export const bootstrapDockerCompose = async () => {
     composeFilePath,
     'e2e.docker-compose.yml',
   )
-    .withWaitStrategy(
-      'nats',
-      waitForText('Listening for client connections on 0.0.0.0:4222'),
-    )
-    .withWaitStrategy('scheduler', waitForText('App Running'))
+    .withWaitStrategy('rabbitmq_1', waitForText('Server startup complete'))
+    .withWaitStrategy('mongo_1', waitForText('Waiting for connections'))
+    .withWaitStrategy('scheduler_1', waitForText('Microservice is running'))
     .withBuild()
     .up();
 
-  await setTimeout(30_000);
+  const rabbitmqContainer = dockerComposeEnvironment.getContainer('rabbitmq');
 
-  const natsContainer = dockerComposeEnvironment.getContainer('nats');
-
-  global.__nats__ = {
-    host: natsContainer.getHost(),
-    port: natsContainer.getMappedPort(4222),
+  global.__rabbitmq__ = {
+    host: rabbitmqContainer.getHost(),
+    port: rabbitmqContainer.getMappedPort(5672),
   };
 };
 

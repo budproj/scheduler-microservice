@@ -1,10 +1,10 @@
-import { connect as connectNats } from './infrastructure/nats';
+import { connect as connectMessaging } from './infrastructure/messaging';
 import {
   connect as connectAgenda,
   enableGracefulShutdown,
 } from './infrastructure/agenda';
 import { init as processRoutineInit } from './jobs/process-routine';
-import { healthCheckController } from './nats.controller';
+import { messagingController } from './messaging.controller';
 import { logger } from './infrastructure/logger';
 
 export const initalizeApplication = async () => {
@@ -13,10 +13,10 @@ export const initalizeApplication = async () => {
   enableGracefulShutdown();
   processRoutineInit();
 
-  // NATS
-  await connectNats();
+  // Messaging
+  await connectMessaging();
 
   // Controllers
-  healthCheckController();
+  messagingController();
   logger.info('Microservice is running');
 };

@@ -1,6 +1,6 @@
 import { logger } from '../infrastructure/logger';
 import { define, Job, schedule, cancelJobs } from '../infrastructure/agenda';
-import { encode, publish } from '../infrastructure/nats';
+import { publish } from '../infrastructure/messaging';
 
 export interface processRoutineData {
   id: string;
@@ -16,13 +16,13 @@ export interface removeRoutineData {
 export const init = () => {
   define(
     'processRoutine',
-    (job: Job<processRoutineData & { queue: string }>): void => {
-      logger.info('processing routine', job);
+    async (job: Job<processRoutineData & { queue: string }>): Promise<void> => {
+      logger.info('processing routine', job.attrs.data);
 
       const { queue, ...jobData } = job.attrs.data;
-      const data = encode<processRoutineData>(jobData);
+      const data = jobData;
 
-      return publish(queue, data);
+      await publish(queue, data);
     },
   );
 };
