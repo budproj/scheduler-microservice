@@ -38,5 +38,5 @@ spec:
             - name: RABBITMQ_CONNECTION_STRING
               valueFrom:
                 secretKeyRef:
-                  name: notifications-microservice-secrets
+                  name: scheduler-microservice-secrets
                   key: rabbitmq-connection-string
