@@ -17,6 +17,17 @@ services:
     networks:
       - bud-scheduler
 
+
+  agenda-admin:
+    image: agenda/agendash
+    environment:
+      MONGODB_URI: mongodb://username:password@mongo:27017/
+      # COLLECTION: value
+    ports:
+      - 5555:3000
+    networks:
+      - bud-scheduler
+
   scheduler:
     build: .
     depends_on:
