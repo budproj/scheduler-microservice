@@ -1,5 +1,10 @@
 import { logger } from '../infrastructure/logger';
-import { define, Job, schedule, cancelJobs } from '../infrastructure/agenda';
+import {
+  define,
+  Job,
+  cancelJobs,
+  createAndRepeat,
+} from '../infrastructure/agenda';
 import { publish } from '../infrastructure/messaging';
 
 export interface processRoutineData {
@@ -28,7 +33,7 @@ export const init = () => {
 };
 
 export const scheduleRoutine = (when: string, data: unknown) =>
-  schedule('processRoutine', when, data);
+  createAndRepeat('processRoutine', when, data);
 
 export const removeRoutine = (data: removeRoutineData) =>
   cancelJobs<removeRoutineData>({
