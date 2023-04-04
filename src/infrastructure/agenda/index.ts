@@ -1,9 +1,13 @@
 export { Job } from 'agenda';
-export { every } from './every';
 export { define } from './define';
 export { connect } from './connect';
 export { enableGracefulShutdown } from './graceful-shutdown';
 export { cancelJobs } from './cancel-jobs';
-export { repeatEvery } from './repeat-every';
-export { create } from './create';
-export { schedule } from './schedule';
+export { createAndRepeat } from './create-and-repeat';
+
+export interface GenericSchedulerInput {
+  uniqueIdentifier: string;
+  queue: string;
+  cron: string;
+  [key: string]: any;
+}

@@ -1,14 +1,11 @@
 import { subscribe } from './infrastructure/messaging';
-import { removeRoutine, scheduleRoutine } from './jobs/process-routine';
+import {
+  ProcessRoutineData,
+  removeRoutine,
+  scheduleRoutine,
+} from './jobs/process-routine';
 import { logger } from './infrastructure/logger';
-
-interface ScheduleInput {
-  id: string;
-  queue: string;
-  companyId: string;
-  disabledTeams: string[];
-  cron: string;
-}
+import { GenericSchedulerInput } from './infrastructure/agenda';
 
 export const messagingController = () => {
   subscribe('scheduler-microservice:health-check', (msg, reply) => {
@@ -25,32 +22,29 @@ export const messagingController = () => {
   subscribe('scheduler-microservice:createSchedule', async (msg) => {
     logger.info('received a createSchedule message');
 
-    const { data } = msg.body;
-    const { cron, ...routine } = data as ScheduleInput;
+    const { data } = msg.body as ProcessRoutineData;
+    const { cron } = data as ProcessRoutineData;
 
-    scheduleRoutine(cron, routine);
+    scheduleRoutine(cron, data);
   });
 
   subscribe('scheduler-microservice:deleteSchedule', async (msg) => {
     logger.info('received a deleteSchedule message');
 
     const { data } = msg.body;
-    const { queue, companyId } = data as ScheduleInput;
-    const routine = { queue, companyId };
+    const { uniqueIdentifier } = data as GenericSchedulerInput;
 
-    await removeRoutine(routine);
+    await removeRoutine(uniqueIdentifier);
   });
 
   subscribe('scheduler-microservice:updateSchedule', async (msg) => {
     logger.info('received a updateSchedule message', msg.body);
 
-    const scheduleConfiguration = msg.body;
+    const scheduleConfiguration = msg.body as ProcessRoutineData;
 
-    const { cron, queue, companyId, ...restOfRoutine } =
-      scheduleConfiguration as ScheduleInput;
-    await removeRoutine({ queue, companyId });
+    const { cron, uniqueIdentifier } = scheduleConfiguration;
+    await removeRoutine(uniqueIdentifier);
 
-    const newSchedule = { queue, companyId, ...restOfRoutine };
-    await scheduleRoutine(cron, newSchedule);
+    await scheduleRoutine(cron, scheduleConfiguration);
   });
 };
