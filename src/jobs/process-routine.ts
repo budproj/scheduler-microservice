@@ -4,24 +4,20 @@ import {
   Job,
   cancelJobs,
   createAndRepeat,
+  GenericSchedulerInput,
 } from '../infrastructure/agenda';
 import { publish } from '../infrastructure/messaging';
 
-export interface processRoutineData {
+export interface ProcessRoutineData extends GenericSchedulerInput {
   id: string;
   companyId: string;
   disabledTeams: string[];
 }
 
-export interface removeRoutineData {
-  companyId: string;
-  queue: string;
-}
-
 export const init = () => {
   define(
     'processRoutine',
-    async (job: Job<processRoutineData & { queue: string }>): Promise<void> => {
+    async (job: Job<ProcessRoutineData & { queue: string }>): Promise<void> => {
       logger.info('processing routine', job.attrs.data);
 
       const { queue, ...jobData } = job.attrs.data;
@@ -32,12 +28,11 @@ export const init = () => {
   );
 };
 
-export const scheduleRoutine = (when: string, data: unknown) =>
+export const scheduleRoutine = (when: string, data: ProcessRoutineData) =>
   createAndRepeat('processRoutine', when, data);
 
-export const removeRoutine = (data: removeRoutineData) =>
-  cancelJobs<removeRoutineData>({
+export const removeRoutine = (identifier: string) =>
+  cancelJobs({
     name: 'processRoutine',
-    'data.companyId': data.companyId,
-    'data.queue': data.queue,
+    'data.uniqueIdentifier': identifier,
   });
